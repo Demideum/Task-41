@@ -123,12 +123,47 @@ namespace Task_41
                     if (_players[result - 1].IsBanned == false)
                     {
                         _players[result - 1].Ban();
-                        PutPlug("\nСтатус бана игрока изменен! Для продолжения нажмите любую клавишу.");
+                        PutPlug("\nИгрок - Забанен! Для продолжения нажмите любую клавишу.");
                     }
                     else
                     {
+                        PutPlug("\nИгрок уже забанен! Для продолжения нажмите любую клавишу.");
+                    }
+                    Console.Clear();
+                }
+                else
+                {
+                    PutPlug("\nДанные не корректны");
+                }
+            }
+            else
+            {
+                PutPlug("\nВаш список игроков - пуст.");
+            }
+        }
+        private void UnbanPlayer()
+        {
+            string userInput;
+            int result;
+            bool isConsoleBanActive = false;
+
+            if (_players.Count > 0)
+            {
+                ShowPlayers();
+                Console.WriteLine("\nЧтобы изменить статус бана персонажа, напиши его уникальный номер");
+
+                isConsoleBanActive = CheckString(out userInput, out result);
+
+                if (isConsoleBanActive)
+                {
+                    if (_players[result - 1].IsBanned == true)
+                    {
                         _players[result - 1].Unban();
-                        PutPlug("\nСтатус бана игрока изменен! Для продолжения нажмите любую клавишу.");
+                        PutPlug("\nИгрок - Разбанен! Для продолжения нажмите любую клавишу.");
+                    }
+                    else
+                    {
+                        PutPlug("\n Игрок уже разбанен! Для продолжения нажмите любую клавишу.");
                     }
                     Console.Clear();
                 }
@@ -150,7 +185,7 @@ namespace Task_41
             while (_isWork)
             {
                 Console.WriteLine("\nДобро пожаловать! Выберите команду из предложенных:");
-                Console.WriteLine("1 - Добавить игрока \n2 - Консоль бана \n3 - Удалить игрока \n4 - Список всех игроков \n5 - Выход");
+                Console.WriteLine("1 - Добавить игрока \n2 - Забанить игрока \n3 - Разбанить игрока \n4 - Удалить игрока \n5 - Список всех игроков \n6 - Выход");
                 userInput = Console.ReadLine();
                 Console.Clear();
 
@@ -163,12 +198,15 @@ namespace Task_41
                         BanPlayer();
                         break;
                     case "3":
-                        DeletePlayer();
+                        UnbanPlayer();
                         break;
                     case "4":
-                        ShowPlayers();
+                        DeletePlayer();
                         break;
                     case "5":
+                        ShowPlayers();
+                        break;
+                    case "6":
                         _isWork = false;
                         break;
                     default:
