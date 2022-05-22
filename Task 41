@@ -1,0 +1,210 @@
+namespace Task_41
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            DataBase dataBase = new DataBase();
+            dataBase.Work();
+        }
+    }
+
+    class DataBase
+    {
+        private bool _isWork = true;
+        private List<Player> _players = new List<Player>();
+
+        private void AddPlayer()
+        {
+            string name;
+            string lvl;
+            int result;
+            bool isStringNumber;
+
+            Console.Write("\nВведите имя игрока: ");
+            name = Console.ReadLine();
+
+            Console.Write("\nВведите уровень игрока: ");
+            isStringNumber = CheckString(out lvl, out result);
+
+            if (isStringNumber)
+            {
+                _players.Add(new Player(name, result));
+                PutPlug("\nИгрок добавлен! Для продолжения нажмите любую клавишу.");
+            }
+            else
+            {
+                PutPlug("Введите корректные данные");
+            }
+            Console.Clear();
+        }
+
+        private void PutPlug(string message)
+        {
+            Console.WriteLine(message);
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        private bool CheckString(out string userInput, out int result)
+        {
+            userInput = " ";
+            result = 0;
+            bool isStringNumber;
+
+            userInput = Console.ReadLine();
+            isStringNumber = int.TryParse(userInput, out result);
+            return isStringNumber;
+        }
+
+        private void ShowPlayers()
+        {
+            if (_players.Count > 0)
+            {
+                Console.WriteLine("\nСписок всех игроков:");
+
+                for (int i = 0; i < _players.Count; i++)
+                {
+                    Console.Write($"\nУникальный номер - {i + 1}");
+                    _players[i].ShowInfo();
+                }
+            }
+            else
+            {
+                PutPlug("\nВаш список игроков - пуст. Для продолжения нажмите любую клавишу.");
+                Console.Clear();
+            }
+        }
+
+        private void DeletePlayer()
+        {
+            string userInput;
+            int result;
+            bool isStringNumber;
+
+            if (_players.Count > 0)
+            {
+                ShowPlayers();
+                Console.WriteLine("\nВведите уникальный номер игрока для удаления:");
+
+                isStringNumber = CheckString(out userInput, out result);
+
+                if (isStringNumber)
+                {
+                    _players.RemoveAt(result - 1);
+                    PutPlug("\nИгрок удален! Для продолжения нажмите любую клавишу.");
+                }
+                else
+                {
+                    PutPlug("\nДанные не корректны.");
+                }
+            }
+            else
+            {
+                PutPlug("\nВаш список игроков - пуст.");
+            }
+        }
+
+        private void BanPlayer()
+        {
+            string userInput;
+            int result;
+            bool isConsoleBanActive = false;
+
+            if (_players.Count > 0)
+            {
+                ShowPlayers();
+                Console.WriteLine("\nЧтобы изменить статус бана персонажа, напиши его уникальный номер");
+
+                isConsoleBanActive = CheckString(out userInput, out result);
+
+                if (isConsoleBanActive)
+                {
+                    if (_players[result - 1].IsBanned == false)
+                    {
+                        _players[result - 1].Ban();
+                        PutPlug("\nСтатус бана игрока изменен! Для продолжения нажмите любую клавишу.");
+                    }
+                    else
+                    {
+                        _players[result - 1].Unban();
+                        PutPlug("\nСтатус бана игрока изменен! Для продолжения нажмите любую клавишу.");
+                    }
+                    Console.Clear();
+                }
+                else
+                {
+                    PutPlug("\nДанные не корректны");
+                }
+            }
+            else
+            {
+                PutPlug("\nВаш список игроков - пуст.");
+            }
+        }
+
+        public void Work()
+        {
+            string userInput;
+
+            while (_isWork)
+            {
+                Console.WriteLine("\nДобро пожаловать! Выберите команду из предложенных:");
+                Console.WriteLine("1 - Добавить игрока \n2 - Консоль бана \n3 - Удалить игрока \n4 - Список всех игроков \n5 - Выход");
+                userInput = Console.ReadLine();
+                Console.Clear();
+
+                switch (userInput)
+                {
+                    case "1":
+                        AddPlayer();
+                        break;
+                    case "2":
+                        BanPlayer();
+                        break;
+                    case "3":
+                        DeletePlayer();
+                        break;
+                    case "4":
+                        ShowPlayers();
+                        break;
+                    case "5":
+                        _isWork = false;
+                        break;
+                    default:
+                        Console.WriteLine("\nДанные не корректны");
+                        break;
+                }
+            }
+        }
+    }
+
+    class Player
+    {
+        private string _name;
+        private int _lvl;
+        public bool IsBanned { get; private set; }
+
+        public Player(string name, int lvl)
+        {
+            _name = name;
+            _lvl = lvl;
+            IsBanned = false;
+        }
+
+        public void Unban()
+        {
+            IsBanned = false;
+        }
+
+        public void Ban()
+        {
+            IsBanned = true;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"\nИмя - {_name} \nУровень - {_lvl} \nСтатус бана - {IsBanned}");
+        }
+    }
+}
